@@ -23,12 +23,11 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install
-        # setup-uv's managed interpreter refuses `--system` installs ("externally
-        # managed"), and on Windows `python` then resolves to a different interpreter
-        # anyway - a project venv + `uv run` pins install and test to the same env.
-        run: |
-          uv venv
-          uv pip install -e ".[dev]"
+        # setup-uv activates its own venv at the repo ROOT (exports VIRTUAL_ENV),
+        # which `uv pip install` honours while `uv run` uses the project venv here -
+        # two different environments, observed on run 2. `uv sync` ignores a
+        # mismatched VIRTUAL_ENV by design and always targets the project's .venv.
+        run: uv sync --extra dev
       - name: Test (offline — no model, no key, no network)
         run: uv run --no-sync python -m pytest tests/
       - name: Offline end-to-end demo
@@ -62,8 +61,8 @@ jobs:
           python-version: "3.12"
       - name: Install with licence tooling
         run: |
-          uv venv
-          uv pip install -e . pip-licenses
+          uv sync
+          uv pip install --python .venv pip-licenses
       - name: Refuse copyleft in the dependency tree
         run: |
           uv run --no-sync pip-licenses --format=markdown
