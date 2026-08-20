@@ -42,7 +42,7 @@ from extrct.runner import call_once
 class ExtrctSweepExtract(Component):
     display_name: str = "Run - Sweep Extract"
     description: str = "One extraction per config cell: bounded concurrency, content-addressed, resumable."
-    documentation: str = "docs/extraction-stack/grounding-certainty-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/grounding-certainty-design.md"
     icon: str = "layers"
     name: str = "extrct_sweep_extract"
 

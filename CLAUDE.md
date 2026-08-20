@@ -12,8 +12,8 @@ next). Optimise for **re-derivable, auditable artifacts**, not for shipping spee
 | Langflow lane | [`integrations/langflow/`](integrations/langflow/) — components, the test harness, and the FROZEN legacy engine the canvas still runs | canvas behaviour |
 | Deployment | [`deploy/`](deploy/) — compose components, one folder per service, composed with `include:`; optionality via `profiles:` | the running stack |
 | Open work | [`TODO.md`](TODO.md) | what is open *now* |
-| Work log, append-only | [`docs/log/`](docs/log/) | what happened *when* |
-| Design of record | [`docs/extraction-stack/`](docs/extraction-stack/) | why things are the way they are, and what was measured to find out |
+| Work log, append-only | [`docs/system-arch/log/`](docs/system-arch/log/) | what happened *when* |
+| Design of record | [`docs/system-arch/extraction-stack/`](docs/system-arch/extraction-stack/) | why things are the way they are, and what was measured to find out |
 
 ## Red lines — do not cross without an explicit decision
 

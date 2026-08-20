@@ -73,7 +73,7 @@ REQUIRED_WHEN_SHOWN = ("target",)
 class ExtrctFlowCall(Component):
     display_name = "Flow - Call"
     description = "Call another flow: wait for its outputs, post it as a background job, or check a job."
-    documentation = "docs/extraction-stack/flow-calls.md"
+    documentation = "docs/system-arch/extraction-stack/flow-calls.md"
     icon = "send"
     name = "extrct_flow_call"
 

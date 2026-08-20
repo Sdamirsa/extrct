@@ -46,7 +46,7 @@ cite"""
 class MockPipelinePayload(Component):
     display_name: str = "Prep - Mock Payload"
     description: str = "Synthetic pipeline config with per-step model config, plus cardiac radiology reports."
-    documentation: str = "docs/reference/langflow-reference.md"
+    documentation: str = "docs/system-arch/reference/langflow-reference.md"
     icon: str = "flask-conical"
     name: str = "mock_pipeline_payload"
 

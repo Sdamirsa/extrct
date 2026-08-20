@@ -37,7 +37,7 @@ from extrct.flow_model import MERGER_KEYS
 class ExtrctExtractionMerger(Component):
     display_name: str = "PostPrep - Extraction Merger"
     description: str = "Merge chunk extractions: vote, dedup lists by similarity, label every conflict."
-    documentation: str = "docs/extraction-stack/long-text-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/long-text-design.md"
     icon: str = "merge"
     name: str = "extrct_extraction_merger"
 

@@ -48,7 +48,7 @@ DEFAULT_ROWS = flow_model.sweep_catalog()
 class ExtrctConfigSweep(Component):
     display_name: str = "Flow - Sweep"
     description: str = "Expand value lists into the full grid of content-addressed config cells."
-    documentation: str = "docs/extraction-stack/grounding-certainty-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/grounding-certainty-design.md"
     icon: str = "grid-3x3"
     name: str = "extrct_config_sweep"
 

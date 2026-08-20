@@ -39,7 +39,7 @@ from extrct.runner import call_once
 class ExtrctChunkExtract(Component):
     display_name: str = "Run - Chunk Extract"
     description: str = "One extraction per chunk: bounded concurrency, content-addressed, resumable."
-    documentation: str = "docs/extraction-stack/long-text-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/long-text-design.md"
     icon: str = "rows-3"
     name: str = "extrct_chunk_extract"
 

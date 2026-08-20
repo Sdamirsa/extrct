@@ -31,7 +31,7 @@ from extrct.hashing import canonical_json
 class ExtrctFlowResponse(Component):
     display_name = "Flow - Response"
     description = "Bundle pipeline outputs into one canonical, caller-parseable envelope (flow-response/1.0)."
-    documentation = "docs/extraction-stack/flow-calls.md"
+    documentation = "docs/system-arch/extraction-stack/flow-calls.md"
     icon = "reply"
     name = "extrct_flow_response"
 

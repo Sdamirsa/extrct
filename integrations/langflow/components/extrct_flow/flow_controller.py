@@ -49,7 +49,7 @@ from extrct import client_model, flow_model
 class ExtrctFlowController(Component):
     display_name: str = "Flow - Controller"
     description: str = "One flow-def document -> validated, rule-checked config threads, one per component."
-    documentation: str = "docs/extraction-stack/flow-control.md"
+    documentation: str = "docs/system-arch/extraction-stack/flow-control.md"
     icon: str = "sliders-horizontal"
     name: str = "extrct_flow_controller"
 

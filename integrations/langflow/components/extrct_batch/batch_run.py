@@ -1,7 +1,7 @@
 """Run - Batch — the benchmark grid: inputs × configs × schemas, OpenRouter only.
 
 Thin wrapper over extrct.batch (batch-def/1.0; design of record with the D1-D13
-decisions: docs/extraction-stack/batch-design.md). What the engine guarantees:
+decisions: docs/system-arch/extraction-stack/batch-design.md). What the engine guarantees:
 
 - One row per cell, ALWAYS — ok / repaired / failed / config_error /
   skipped_completed / aborted_circuit_breaker. A bad provider config poisons only its
@@ -44,7 +44,7 @@ from extrct import batch
 class ExtrctRunBatch(Component):
     display_name = "Run - Batch"
     description = "The benchmark grid: inputs x configs x schemas — resumable, capped, circuit-broken, fully audited."
-    documentation = "docs/extraction-stack/batch-design.md"
+    documentation = "docs/system-arch/extraction-stack/batch-design.md"
     icon = "grid-3x3"
     name = "extrct_batch_run"
 

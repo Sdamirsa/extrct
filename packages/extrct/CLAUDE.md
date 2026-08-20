@@ -38,7 +38,7 @@ Optimise for **re-derivable, auditable behaviour**, not for shipping speed.
 | Tests (offline, no model/key/network) | `tests/` — behaviour-freezing; mock transports + synthetic payloads shaped like measured responses |
 | Examples + YAML configs | `examples/`, `examples/configs/` — config variables at the top of each script, knobs in the YAML |
 | Docs | `docs/` — architecture, configuration, providers, observability, xai |
-| Work log, append-only | the REPO's `docs/log/` (two levels up) — this package has no separate log |
+| Work log, append-only | the REPO's `docs/system-arch/log/` (two levels up) — this package has no separate log |
 
 ## Conventions
 

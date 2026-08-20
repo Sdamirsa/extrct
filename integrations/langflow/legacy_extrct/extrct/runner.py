@@ -2,7 +2,7 @@
 
 `call_many` is the reason this module exists outside a component: whatever ends up
 conducting the sweep imports the same function the canvas does, so single-item and
-batch cannot drift. See docs/extraction-stack/concurrency.md.
+batch cannot drift. See docs/system-arch/extraction-stack/concurrency.md.
 """
 
 from __future__ import annotations

@@ -3,7 +3,7 @@
 Deliberately free of any `lfx`/Langflow import. Langflow components wrap it; whatever
 conductor runs the sweep imports the same functions. One implementation, two callers.
 
-See docs/extraction-stack/ for the design and the measured API behaviour it defends against.
+See docs/system-arch/extraction-stack/ for the design and the measured API behaviour it defends against.
 """
 
 from . import batch, builtins, call_model, client_model, flow_model, merging, ollama, openrouter, pipeline, repair, storage, wrapping

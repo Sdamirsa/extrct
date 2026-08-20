@@ -191,7 +191,7 @@ REQUIRED_WHEN_SHOWN = {"run_uid", "tag", "target_schema_set", "variables_in", "c
 class ExtrctRegistry(Component):
     display_name: str = "DB - Registry"
     description: str = "Read and write the variable registry; read the run log."
-    documentation: str = "docs/extraction-stack/variables-table.md"
+    documentation: str = "docs/system-arch/extraction-stack/variables-table.md"
     icon: str = "database"
     name: str = "extrct_registry"
 

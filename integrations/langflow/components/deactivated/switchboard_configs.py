@@ -63,7 +63,7 @@ def content_uid(body: dict) -> str:
 class SwitchboardConfigs(Component):
     display_name: str = "Flow - Switchboard"
     description: str = "Enumerate the factorial sweep as content-addressed pipeline configs."
-    documentation: str = "docs/reference/langflow-reference.md"
+    documentation: str = "docs/system-arch/reference/langflow-reference.md"
     icon: str = "grid-3x3"
     name: str = "switchboard_configs"
 

@@ -36,7 +36,7 @@ from extrct.hashing import content_uid
 class ExtrctGrounding(Component):
     display_name: str = "XAI - Evidence Grounding"
     description: str = "Author the grounding step: evidence injected at request time, every quote aligned per chunk."
-    documentation: str = "docs/extraction-stack/grounding-certainty-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/grounding-certainty-design.md"
     icon: str = "crosshair"
     name: str = "extrct_grounding"
 

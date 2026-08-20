@@ -20,6 +20,9 @@ Planned, in order (see TODO.md): component migration onto the published library 
 `products/` — the miners (PubliMiner, ThemaMiner). Products and apps consume the
 library; the library imports nothing above it.
 
+Step-by-step setup guides — library, stack, and the PyPI release runbook — live in
+[docs/for-user/setup/](docs/for-user/setup/).
+
 ---
 
 ## Path 1 — the Python library (no Docker, no models needed to start)

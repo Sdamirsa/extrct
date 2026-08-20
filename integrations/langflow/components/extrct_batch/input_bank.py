@@ -32,7 +32,7 @@ COLUMNS = [
 class ExtrctInputBank(Component):
     display_name = "Prep - Input Bank"
     description = "The batch input axis: texts with optional ids; identity is the content hash, labels never re-bill."
-    documentation = "docs/extraction-stack/batch-design.md"
+    documentation = "docs/system-arch/extraction-stack/batch-design.md"
     icon = "library"
     name = "extrct_input_bank"
 

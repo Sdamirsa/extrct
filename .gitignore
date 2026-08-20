@@ -1,5 +1,8 @@
 # secrets
 deploy/.env
+
+# personal working notes — local-only, never committed (see docs/README.md)
+docs/for-amir/
 .env
 *.pem
 *.key

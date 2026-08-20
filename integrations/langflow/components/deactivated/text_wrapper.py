@@ -29,7 +29,7 @@ from extrct.flow_model import WRAPPER_KEYS
 class ExtrctTextWrapper(Component):
     display_name: str = "Prep - Text Wrapper"
     description: str = "Long text -> deterministic overlapping chunks with source offsets (wrap-def/1.0)."
-    documentation: str = "docs/extraction-stack/long-text-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/long-text-design.md"
     icon: str = "scissors"
     name: str = "extrct_text_wrapper"
 

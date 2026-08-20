@@ -88,7 +88,7 @@ XAI node never blocks a flow.
 **Flow-to-flow calls (call-def/1.0, 2026-08-14):** Flow - Trigger receives JSON (v1
 `POST /api/v1/webhook/<flow>` or v2 tweaks) and Flow - Call sends it (wait / post /
 check over `POST /api/v2/workflows`); model in `extrct/call_model.py`, doc in
-`docs/extraction-stack/flow-calls.md`. Measured traps to respect when touching these:
+`docs/system-arch/extraction-stack/flow-calls.md`. Measured traps to respect when touching these:
 the v1 webhook route matches receivers by case-sensitive substring `"Webhook" in
 node.id`, and canvas drags derive the node id from the CLASS
 (`ext:extrct_flow:ExtrctWebhookTrigger@extra-<sfx>`, measured from a real drag) —

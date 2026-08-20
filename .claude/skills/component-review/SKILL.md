@@ -6,7 +6,7 @@ description: Review Langflow components under integrations/langflow/components/ 
 # The ExtrCT component standard (S1–S15)
 
 Every rule below was paid for by a measured failure or decision (dates in the builder
-agent doc and `docs/extraction-stack/api-notes.md`). Review = run the mechanical script,
+agent doc and `docs/system-arch/extraction-stack/api-notes.md`). Review = run the mechanical script,
 then judge the manual items. A component is DONE only when it passes both.
 
 ## The standard
@@ -61,7 +61,7 @@ then judge the manual items. A component is DONE only when it passes both.
   LOUDLY. Evidence rows are written only by the thing that produced them. raw
   input/chunk text is never stored by default.
 - **S14 — Docstrings carry the measured lessons** (what was observed, when), not
-  narration; `documentation` points to the owning doc in `docs/extraction-stack/`.
+  narration; `documentation` points to the owning doc in `docs/system-arch/extraction-stack/`.
 - **S15 — Verified in-container before done.** Template through
   `build_custom_component_template` (the real loader — `to_frontend_node` falsely
   rejects list inputs), then an honest functional run via `set_attributes` with real or

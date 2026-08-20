@@ -47,7 +47,7 @@ from extrct.hashing import key_fingerprint
 class ExtrctOpenRouterClient(Component):
     display_name: str = "Client - OpenRouter"
     description: str = "Configure an OpenRouter call. OUTSIDE THE WALL — synthetic/de-identified content only."
-    documentation: str = "docs/extraction-stack/api-notes.md"
+    documentation: str = "docs/system-arch/extraction-stack/api-notes.md"
     icon: str = "globe"
     name: str = "extrct_openrouter_client"
 

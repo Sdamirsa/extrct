@@ -47,7 +47,7 @@ from extrct.wrapping import WRAPPER_LOGICS
 class ExtrctWrapperMerger(Component):
     display_name: str = "Adapter - Wrapper & Merger"
     description: str = "Author the long-text lane: chunk first, parallel per-chunk runs, merge last with labeled conflicts."
-    documentation: str = "docs/extraction-stack/long-text-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/long-text-design.md"
     icon: str = "combine"
     name: str = "extrct_wrapper_merger"
 

@@ -30,7 +30,7 @@ SECRET_NAME_HINTS = ("KEY", "SECRET", "TOKEN", "PASSWORD", "PASSWD", "CREDENTIAL
 class ConvertRichMessage(Component):
     display_name: str = "Prep - Message"
     description: str = "Title + your text + one global variable + any mix of tables/JSON, as clean markdown."
-    documentation: str = "docs/extraction-stack/"
+    documentation: str = "docs/system-arch/extraction-stack/"
     icon: str = "file-text"
     name: str = "convert_rich_message"
 

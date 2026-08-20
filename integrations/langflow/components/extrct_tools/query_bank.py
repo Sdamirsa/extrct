@@ -77,7 +77,7 @@ def content_uid(body: dict) -> str:
 class QueryBank(Component):
     display_name: str = "Prep - Query Bank"
     description: str = "30 example clinician queries with stable ids and expected behaviour."
-    documentation: str = "docs/reference/langflow-reference.md"
+    documentation: str = "docs/system-arch/reference/langflow-reference.md"
     icon: str = "list-checks"
     name: str = "query_bank"
 

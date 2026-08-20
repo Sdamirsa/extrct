@@ -1,7 +1,7 @@
 """Evidence-quote alignment — the mechanized grounding path. Pure, stdlib-only.
 
 Compact reimplementation of the approach proven in Google langextract (Apache-2.0),
-carrying the deviations recorded in docs/extraction-stack/grounding-research.md:
+carrying the deviations recorded in docs/system-arch/extraction-stack/grounding-research.md:
 
   - Character-class tokenization (letters | digits | single symbols), the granularity
     class that recovers 98-99% of contiguous targets on the BOAT benchmark, where

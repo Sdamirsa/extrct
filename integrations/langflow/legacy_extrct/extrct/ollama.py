@@ -2,7 +2,7 @@
 
 Uses POST /api/chat with `format` carrying a full JSON Schema. NOT /v1 (decision D-a):
 /v1 has three measured shapes that return HTTP 200 with unconstrained prose, and it
-cannot reach `options` at all. See docs/extraction-stack/api-notes.md.
+cannot reach `options` at all. See docs/system-arch/extraction-stack/api-notes.md.
 
 Every sampling key is emitted explicitly. Ollama never errors on an unknown `options`
 key, so always-emit is strictly safer than relying on defaults - and it defeats the

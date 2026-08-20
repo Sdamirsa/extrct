@@ -48,7 +48,7 @@ from extrct import ollama, openrouter, pipeline, repair, storage
 class ExtrctStructuredExtract(Component):
     display_name: str = "Run - Structured Extract"
     description: str = "ONE extraction (never chunked) through the composed pipeline: request, ground, score — with a per-step record."
-    documentation: str = "docs/extraction-stack/flow-control.md"
+    documentation: str = "docs/system-arch/extraction-stack/flow-control.md"
     icon: str = "scan-text"
     name: str = "extrct_structured_extract"
 

@@ -1,15 +1,16 @@
 # TODO
 
 What is open right now. Longer-lived design rationale lives in
-[`docs/extraction-stack/`](docs/extraction-stack/); what happened when lives in
-[`docs/log/`](docs/log/).
+[`docs/system-arch/extraction-stack/`](docs/system-arch/extraction-stack/); what happened when lives in
+[`docs/system-arch/log/`](docs/system-arch/log/).
 
 ## Next up
 
-- [ ] **Publish `extrct` 0.1.0 to PyPI.** The build is clean and the release workflow
-      is wired for Trusted Publishing (`.github/workflows/release.yml`); it needs the
-      PyPI project + pending publisher configured, then a `v0.1.0` tag. Afterwards,
-      drop the `git+https` install fallback from both READMEs.
+- [ ] **Publish `extrct` 0.1.0 to PyPI.** Trusted Publishing is fully linked as of
+      2026-08-20 (pending publisher on PyPI + the `pypi` GitHub environment,
+      restricted to `v*` tags, no stored secrets). Remaining: green CI on main, a
+      release dry run (Actions → release → Run workflow), then the `v0.1.0` tag.
+      Afterwards, drop the `git+https` install fallback from both READMEs.
 - [ ] **Migrate the Langflow components onto the published library.** They currently
       import the legacy API (`flow_model`, `call_model`, module-level `storage`), which
       the published package reorganised into a provider registry, `xai.*`, and

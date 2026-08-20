@@ -1,6 +1,6 @@
 """Per-field certainty from token logprobs — pure, dual-caller (replayability/independent measurement).
 
-Statistics per field (decisions in docs/extraction-stack/logprobs-design.md + amendments):
+Statistics per field (decisions in docs/system-arch/extraction-stack/logprobs-design.md + amendments):
 `mean` (geometric per-token, primary), `joint` (within-field-type ranker), `min`
 (secondary OR-gate), `first_token`, `margin` (top-1 minus top-2 at the first value
 token), and for enum fields an empirical first-token posterior over the option set.

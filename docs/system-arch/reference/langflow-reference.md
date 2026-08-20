@@ -3,7 +3,7 @@
 *Compiled 2026-08-04 from [docs.langflow.org](https://docs.langflow.org/) against the
 running instance (Langflow 1.11.0). This is a build-time reference, not architecture —
 the position on Langflow's role is in
-[`../../integrations/langflow/README.md`](../../integrations/langflow/README.md).
+[`../../integrations/langflow/README.md`](../../../integrations/langflow/README.md).
 Anything below marked **unverified** was not confirmed against a running instance.*
 
 **Local endpoints:** Langflow http://localhost:7860 · Langfuse http://localhost:3000 ·

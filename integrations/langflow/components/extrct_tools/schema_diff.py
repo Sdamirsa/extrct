@@ -52,7 +52,7 @@ def _fmt(v: Any) -> str:
 class ExtrctSchemaDiff(Component):
     display_name: str = "QC - Schema Diff"
     description: str = "Assert two schemas are identical; show exactly where they differ."
-    documentation: str = "docs/extraction-stack/testing-guide.md"
+    documentation: str = "docs/system-arch/extraction-stack/testing-guide.md"
     icon: str = "git-compare"
     name: str = "extrct_schema_diff"
 

@@ -1,6 +1,6 @@
 """ExtrCT Batch (batch-def/1.0) — the benchmark grid: inputs × configs × schemas.
 
-Design of record: docs/extraction-stack/batch-design.md (D1-D13, each decision traced
+Design of record: docs/system-arch/extraction-stack/batch-design.md (D1-D13, each decision traced
 to the 2026-08-17 research). The short version of the ones this module enforces:
 
 - OpenRouter ONLY (user scope), every provider config PINNED to an endpoint tag —

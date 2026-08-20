@@ -78,7 +78,7 @@ _MODEL_INFO = ("ollama: press refresh to list models pulled on the host (tag, e.
 class ExtrctModelClient(Component):
     display_name: str = "Provider - Model Server"
     description: str = "One client for both providers: Ollama (inside the wall) and OpenRouter (outside - )."
-    documentation: str = "docs/extraction-stack/client-model.md"
+    documentation: str = "docs/system-arch/extraction-stack/client-model.md"
     icon: str = "server"
     name: str = "extrct_model_client"
 

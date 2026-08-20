@@ -52,7 +52,7 @@ DEFAULT_ROWS = flow_model.variable_catalog()
 class ExtrctFlowConfig(Component):
     display_name: str = "Flow - Config"
     description: str = "Typed, namespaced flow variables as one Data payload with a content-addressed uid."
-    documentation: str = "docs/extraction-stack/grounding-certainty-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/grounding-certainty-design.md"
     icon: str = "settings-2"
     name: str = "extrct_flow_config"
 

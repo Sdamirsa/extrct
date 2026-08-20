@@ -1,9 +1,9 @@
 ---
-description: Append a dated entry to the work log in docs/log/
+description: Append a dated entry to the work log in docs/system-arch/log/
 ---
 
-Append an entry to the current month's file in `docs/log/` (create it if the month has no file
-yet, following the format in `docs/log/README.md`).
+Append an entry to the current month's file in `docs/system-arch/log/` (create it if the month has no file
+yet, following the format in `docs/system-arch/log/README.md`).
 
 Base the entry on what actually happened in this session — read `git log` and `git status` if
 you need to ground it. Cover:

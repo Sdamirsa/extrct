@@ -32,7 +32,7 @@ DEFAULT_INSTRUCTION = (
 class GroundingPosthocTemplater(Component):
     display_name: str = "XAI - Evidence Grounding - Posthoc Templater"
     description: str = "Compose the grounding task text for a second Structured Extract run."
-    documentation: str = "docs/extraction-stack/grounding-certainty-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/grounding-certainty-design.md"
     icon: str = "file-input"
     name: str = "grounding_posthoc_templater"
 

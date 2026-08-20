@@ -61,7 +61,7 @@ from extrct import ollama, openrouter, pipeline, repair, storage
 class ExtrctRunLongText(Component):
     display_name: str = "Run - Long Text"
     description: str = "Chunk first, one pipeline per chunk (bounded parallel), merge last with labeled conflicts."
-    documentation: str = "docs/extraction-stack/long-text-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/long-text-design.md"
     icon: str = "rows-3"
     name: str = "extrct_long_text"
 

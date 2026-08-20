@@ -1,7 +1,7 @@
 """Schema Builder — variable rows to a JSON Schema envelope.
 
 All logic lives in `extrct.schema`; this is a thin wrapper so the same code is
-callable from whatever conductor runs the sweep. See docs/extraction-stack/.
+callable from whatever conductor runs the sweep. See docs/system-arch/extraction-stack/.
 
 ONE CLEAN SCHEMA output since 2026-08-14: the Request Evidence toggle and the Grounding
 Schema output moved out — evidence injection now happens at request time inside
@@ -84,7 +84,7 @@ DEFAULT_ROWS = [
 class ExtrctSchemaBuilder(Component):
     display_name: str = "Prep - Schema Builder"
     description: str = "Variable rows to a JSON Schema envelope, with nesting, enums and constraints."
-    documentation: str = "docs/extraction-stack/"
+    documentation: str = "docs/system-arch/extraction-stack/"
     icon: str = "table-2"
     name: str = "extrct_schema_builder"
 

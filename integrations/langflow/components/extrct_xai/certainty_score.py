@@ -32,7 +32,7 @@ from extrct.hashing import content_uid
 class ExtrctCertaintyScore(Component):
     display_name: str = "XAI - Certainty Score"
     description: str = "Author the certainty step: logprob riders at request time, per-variable scoring per chunk."
-    documentation: str = "docs/extraction-stack/grounding-certainty-design.md"
+    documentation: str = "docs/system-arch/extraction-stack/grounding-certainty-design.md"
     icon: str = "gauge"
     name: str = "extrct_certainty_score"
 

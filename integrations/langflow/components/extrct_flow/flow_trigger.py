@@ -35,7 +35,7 @@ from extrct import call_model
 class ExtrctWebhookTrigger(Component):
     display_name = "Flow - Trigger"
     description = "Receives a JSON payload (v1 webhook or v2 tweak) and emits it as Data, parsed loudly."
-    documentation = "docs/extraction-stack/flow-calls.md"
+    documentation = "docs/system-arch/extraction-stack/flow-calls.md"
     icon = "webhook"
     name = "extrct_Webhook_trigger"  # capital W is load-bearing — see module docstring
 

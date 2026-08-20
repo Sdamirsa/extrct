@@ -2,7 +2,7 @@
 
 Emits a frozen client spec the extractor consumes. Native POST /api/chat, never /v1:
 three measured /v1 response_format shapes return HTTP 200 with unconstrained prose, and /v1
-cannot reach `options` at all. See docs/extraction-stack/api-notes.md decision D-a.
+cannot reach `options` at all. See docs/system-arch/extraction-stack/api-notes.md decision D-a.
 """
 
 import os
@@ -23,7 +23,7 @@ from extrct.runner import get_json
 class ExtrctOllamaClient(Component):
     display_name: str = "Client - Ollama"
     description: str = "Configure a native Ollama /api/chat call. Inside the wall."
-    documentation: str = "docs/extraction-stack/api-notes.md"
+    documentation: str = "docs/system-arch/extraction-stack/api-notes.md"
     icon: str = "hard-drive"
     name: str = "extrct_ollama_client"
 
