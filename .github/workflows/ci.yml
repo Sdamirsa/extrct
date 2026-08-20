@@ -1,0 +1,64 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: packages/extrct
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: uv pip install --system -e ".[dev]"
+      - name: Test (offline — no model, no key, no network)
+        run: python -m pytest tests/
+      - name: Offline end-to-end demo
+        run: python examples/00_offline_demo.py
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Build sdist + wheel
+        run: uv build
+      - name: Wheel is extrct only
+        run: |
+          python - <<'EOF'
+          import glob, zipfile
+          whl = glob.glob("dist/*.whl")[0]
+          top = sorted({n.split("/")[0] for n in zipfile.ZipFile(whl).namelist()})
+          assert all(t.startswith("extrct") for t in top), top
+          print("ok:", top)
+          EOF
+
+  license-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Install with licence tooling
+        run: |
+          uv pip install --system -e . pip-licenses
+      - name: Refuse copyleft in the dependency tree
+        run: |
+          pip-licenses --format=markdown
+          pip-licenses --fail-on="GPL;GPLv2;GPLv3;AGPL;AGPLv3;LGPL;SSPL"

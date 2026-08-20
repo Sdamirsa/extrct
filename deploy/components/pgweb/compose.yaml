@@ -1,0 +1,34 @@
+# pgweb — browser UI over the record database (extrct-postgres). OPT-IN ONLY.
+#
+#   docker compose --profile dbui up -d
+#
+# Pick rationale (2026-08-14): MIT license (license policy-clean), a single small Go binary with
+# no PHP/Java runtime, connects from one DATABASE_URL. pgAdmin was the heavyweight
+# alternative; for BROWSING runs/registry rows a viewer is the right shape.
+#
+# READ-ONLY by design: the runs and registry tables are auditable artifacts — every
+# write should come from a component (loud, logged, content-addressed), never from a
+# hand edit invisible to the trail (replayability/independent measurement). Drop the --readonly flag below only as a
+# deliberate exception, and put what you changed in the work log.
+#
+# Same three-line security model as everything else: profile-gated (never in the one-operator bootstrap
+# bootstrap test), 127.0.0.1 binding, and it talks to the postgres service on the
+# compose network (no new DB exposure).
+
+services:
+  pgweb:
+    image: docker.io/sosedoff/pgweb:0.16.2   # exact pin, house rule — never :latest
+    profiles: [dbui]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:8081"               # loopback ONLY
+    environment:
+      # Same nested default chain as the langflow DSNs: EXTRCT_* first, EXTRCT_* legacy,
+      # 'extrct' defaults (the in-DB user/db deliberately kept their name at the rename).
+      PGWEB_DATABASE_URL: postgres://${EXTRCT_DB_USER:-extrct}:${EXTRCT_DB_PASSWORD:-extrct}@extrct-postgres:5432/${EXTRCT_DB_NAME:-extrct}?sslmode=disable
+    # --lock-session pins the UI to the URL above (no connection form to point at
+    # arbitrary hosts from a browser tab). Remove --readonly ONLY as a logged decision.
+    command: ["--bind=0.0.0.0", "--listen=8081", "--readonly", "--lock-session"]
+    depends_on:
+      extrct-postgres:
+        condition: service_healthy

@@ -1,0 +1,21 @@
+# extrct deployment root — a manifest, nothing else.
+#
+# Component decomposition uses the Compose spec's `include:` (requires Compose v2.20+),
+# so each component file is self-contained and its relative paths resolve against its
+# OWN directory. Optionality comes from `profiles:` inside the component files, because
+# `include` is unconditional. See deploy/README.md.
+#
+#   docker compose up -d                        core + langfuse
+#   docker compose --profile prototype up -d    core + langfuse + langflow canvas
+#
+# All services bind to 127.0.0.1 only. Nothing here is reachable from another machine.
+
+# Project name: container prefix + Docker Desktop group. Every named volume is prefixed
+# extrct_ in its component file, so one stack lives and dies as a unit.
+name: extrct
+
+include:
+  - components/core/compose.yaml
+  - components/langfuse/compose.yaml
+  - components/langflow/compose.yaml
+  - components/pgweb/compose.yaml       # postgres browser UI (read-only)   profiles: [dbui]

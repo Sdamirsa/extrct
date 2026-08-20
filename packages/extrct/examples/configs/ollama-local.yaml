@@ -1,0 +1,40 @@
+# Local extraction against Ollama. Pull a model first, e.g.:
+#   ollama pull qwen3:4b-instruct
+# Every sampling knob is always sent explicitly (never inherited from the Modelfile),
+# so two models "at default" stay comparable. Unset keys here fall back to the spec
+# defaults — the normalized definition records them all.
+provider:
+  provider: ollama
+  model: qwen3:4b-instruct
+  base_url: http://localhost:11434
+  num_ctx: 8192                  # silent-failure guard: context overflow returns HTTP 200
+  num_predict: 1024              # silent-failure guard: truncation returns HTTP 200
+  temperature: 0.0
+  seed: 42
+
+schema:
+  root_name: echo_report
+  variables:
+    - name: lvef
+      type: float
+      description: Left-ventricular ejection fraction, percent
+      constraints: {ge: 0, le: 100}
+    - name: mitral_regurgitation
+      type: str
+      options: ["none", "mild", "moderate", "severe"]
+      required: false
+    - name: diagnoses
+      type: str
+      is_list: true
+      description: Every diagnosis mentioned, verbatim
+
+extract:
+  ladder: ["json_repair", "coerce"]
+  run_tags: quickstart
+
+grounding: {enabled: true}
+certainty: {enabled: true}
+
+storage:
+  backend: sqlite
+  path: runs.sqlite

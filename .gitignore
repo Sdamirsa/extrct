@@ -1,0 +1,40 @@
+# secrets
+deploy/.env
+.env
+*.pem
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+uv.lock
+
+# claude code worktrees (live under .claude/ in the main checkout)
+.claude/worktrees/
+
+# dagster scratch
+tmp*/
+.dagster_home/
+
+# data — nothing derived from MIMIC or clinical sources belongs in git;
+# local run logs (SQLite) stay local too
+data/
+*.parquet
+*.duckdb
+*.sqlite
+*.db
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+temp.zip

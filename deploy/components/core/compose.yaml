@@ -1,0 +1,56 @@
+# Core — always on. No `profiles:` key, so a bare `docker compose up` starts these.
+#
+#   extrct-postgres  the System DB core: content-addressed prompt/tool/policy registries
+#   label-studio     Human Eval core: adjudication and blinded scoring
+#
+# Langfuse is the third leg of M-02 and lives in ../langfuse/compose.yaml — it is a
+# six-service stack of its own and is easier to re-sync with upstream when kept separate.
+#
+
+services:
+  extrct-postgres:
+    image: docker.io/postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${EXTRCT_DB_USER:-extrct}
+      POSTGRES_PASSWORD: ${EXTRCT_DB_PASSWORD:-extrct}
+      POSTGRES_DB: ${EXTRCT_DB_NAME:-extrct}
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      # The one Postgres you actually connect to from Python.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - extrct-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${EXTRCT_DB_USER:-extrct}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  label-studio:
+    image: docker.io/heartexlabs/label-studio:1.20.0
+    restart: unless-stopped
+    environment:
+      # the egress boundary: no phone-home. Label Studio's analytics opt-out.
+      COLLECT_ANALYTICS: "false"
+      LABEL_STUDIO_HOST: http://localhost:8080
+      # Bootstrap admin. If these do not take effect on your version, just sign up in
+      # the UI — the first account created becomes the superuser.
+      LABEL_STUDIO_USERNAME: ${LABEL_STUDIO_USERNAME:-admin@extrct.local}
+      LABEL_STUDIO_PASSWORD: ${LABEL_STUDIO_PASSWORD:-changeme}
+      LABEL_STUDIO_DISABLE_SIGNUP_WITHOUT_LINK: "true"
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      # Default SQLite backend — deliberate. Fewer moving parts for a single annotator
+      # workstation. Move to extrct-postgres only if concurrency actually bites.
+      - label-studio-data:/label-studio/data
+
+volumes:
+  extrct-postgres-data:
+    # The copied volume (2026-08-11); under project 'extrct' this resolves to
+    # extrct_extrct-postgres-data, which is exactly where the data was copied.
+  label-studio-data:
+    # PINNED to the original project-prefixed name: third-party data never moved.
+    name: extrct_label-studio-data

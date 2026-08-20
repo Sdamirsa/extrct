@@ -1,0 +1,43 @@
+# Long-document extraction: deterministic chunking + conflict-surfacing merge.
+# The single-run path is just the 1-chunk case of this pipeline.
+provider:
+  provider: ollama
+  model: qwen3:4b-instruct
+  base_url: http://localhost:11434
+  num_ctx: 8192
+
+schema:
+  root_name: discharge_summary
+  variables:
+    - name: lvef
+      type: float
+      description: Most recent LVEF, percent
+      constraints: {ge: 0, le: 100}
+      required: false
+    - name: medications
+      type: str
+      is_list: true
+      description: Every medication mentioned, with dose when given
+    - name: followup_months
+      type: int
+      required: false
+
+extract:
+  ladder: ["json_repair", "coerce"]
+  run_tags: long-text
+
+wrapper:
+  enabled: true
+  logic: paragraph_pack          # fixed_window | paragraph_pack | sentence_pack
+  max_chars: 4000
+  overlap_chars: 400
+  parallel_calls: 4              # chunk-level concurrency (a property of the backend)
+
+merger:
+  scalar_strategy: majority      # majority | first | last | longest | refuse
+  conflict_policy: label_and_resolve   # label_and_null nulls major conflicts instead
+  list_similarity: 0.85          # clustering threshold for list items seen twice (overlap)
+
+storage:
+  backend: sqlite
+  path: runs.sqlite

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(docker compose ps:*)",
+      "Bash(docker compose config:*)",
+      "Bash(docker compose logs:*)",
+      "Bash(docker compose exec -T langflow:*)",
+      "Bash(docker compose exec -T langfuse-clickhouse:*)",
+      "Bash(curl -s -o /dev/null -w:*)",
+      "Bash(curl -s --max-time:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv build:*)"
+    ],
+    "deny": [
+      "Read(./deploy/.env)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_FILE_PATHS\" in *integrations/langflow/components/*|*integrations/langflow/legacy_extrct/*) echo 'Langflow scans components at startup - run: docker compose --profile prototype up -d --force-recreate langflow' ;; *packages/extrct/src/*) echo 'Library change - run the suite and the offline demo from packages/extrct before calling it done (/verify).' ;; esac",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "n=$(git status --porcelain 2>/dev/null | wc -l); if [ \"$n\" -gt 0 ]; then echo \"$n uncommitted path(s). Consider /log then commit.\"; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

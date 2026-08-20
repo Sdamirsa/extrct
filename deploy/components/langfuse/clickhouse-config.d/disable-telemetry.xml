@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+  H1 enforcement for the trace store.
+
+  The stock clickhouse-server config.xml ships with:
+      <send_crash_reports><enabled>true</enabled>
+      <endpoint>https://crash.clickhouse.com/</endpoint>
+
+  ClickHouse holds Langfuse's spans - prompts, model outputs, tool payloads. Crash
+  reports are anonymized stack traces rather than span content, but an unbudgeted
+  outbound endpoint inside the wall is precisely what H1 rules out. Turn it off.
+
+  Files in config.d/ override config.xml. Verify after any image bump with:
+    docker compose exec langfuse-clickhouse \
+      sed -n '/<send_crash_reports>/,/<\/send_crash_reports>/p' /etc/clickhouse-server/config.xml
+-->
+<clickhouse>
+    <send_crash_reports>
+        <enabled>false</enabled>
+        <send_logical_errors>false</send_logical_errors>
+    </send_crash_reports>
+</clickhouse>

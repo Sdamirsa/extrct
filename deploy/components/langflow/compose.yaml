@@ -1,0 +1,139 @@
+# Langflow — the local build/demo canvas. OPT-IN ONLY.
+#
+#   docker compose --profile prototype up -d
+#
+# Treat this service as a remote-code-execution engine with a web UI. Its 2026 record:
+# CVE-2026-33017 (9.8 unauth RCE, exploited within ~20h, and 1.8.2's changelog claimed a
+# fix that was never implemented), CVE-2026-21445 (auth bypass, CISA KEV), CVE-2026-55255
+# (IDOR, fixed 1.9.2), CVE-2026-34046 (cross-user flow + API key disclosure). Langflow's
+# own docs: it "neither enforces isolation between users within a single Langflow process,
+# nor restricts access to the local disk or network resources."
+#
+# The security model here is three lines, not a gateway:
+#   1. profiles: [prototype]      — never starts during the one-operator bootstrap test
+#   2. 127.0.0.1 binding          — kills the whole unauth-RCE class from the network side
+#   3. its own database           — a code-exec surface never shares extrct-postgres
+#
+# DATA LINE: synthetic and de-identified content only. NEVER confidential text. This is
+# a blast-radius decision, not a claim that the rest of the stack is unsafe: keeping a
+# code-execution surface out of reach of sensitive data costs nothing and bounds the
+# damage of the next CVE.
+#
+# See integrations/langflow/README.md.
+
+services:
+  langflow:
+    image: langflowai/langflow:1.11.0   # exact pin. 1.9.2 is the CVE floor; never use :latest
+    profiles: [prototype]
+    restart: unless-stopped
+    depends_on:
+      langflow-db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:7860:7860"           # loopback ONLY — never 0.0.0.0
+    environment:
+      # --- egress ---
+      DO_NOT_TRACK: "true"              # Langflow's own telemetry opt-out
+      LANGFLOW_NATIVE_TRACING: "false"  # Langfuse is the only trace sink
+
+      # --- auth ---
+      # 1.11.x images ship LANGFLOW_AUTO_LOGIN=false at build time, so a superuser is required.
+      LANGFLOW_AUTO_LOGIN: "false"
+      LANGFLOW_SUPERUSER: ${LANGFLOW_SUPERUSER:-admin}
+      LANGFLOW_SUPERUSER_PASSWORD: ${LANGFLOW_SUPERUSER_PASSWORD:-changeme-run-bootstrap-ps1}
+
+      # --- state ---
+      LANGFLOW_DATABASE_URL: postgresql://langflow:${LANGFLOW_DB_PASSWORD:-langflow}@langflow-db:5432/langflow
+      LANGFLOW_CONFIG_DIR: /app/langflow
+      # Canvas auto-save debounce, default 1000ms. Raised 2026-08-11: large flows (and
+      # the 99-row maximum tables riding node templates) make a per-second save chatty.
+      # NOTE: the advice-sourced LANGFLOW_AUTO_REFRESH_INTERVAL / _COMPONENT_CACHE_TIMEOUT
+      # do NOT exist in 1.11 (measured; setting them is a silent no-op).
+      LANGFLOW_AUTO_SAVING_INTERVAL: "5000"
+
+      # --- custom components ---
+      # Deliberately NOT LANGFLOW_ALLOW_CUSTOM_COMPONENTS=false: wrapping the real
+      # extrct-tools is the entire point. Constrain the path instead.
+      LANGFLOW_COMPONENTS_PATH: /components
+      LANGFLOW_ALLOW_COMPONENTS_PATHS_OVERRIDE: "false"
+      LANGFLOW_CUSTOM_COMPONENT_ADMIN_ONLY: "true"
+
+      # --- SSRF allowlist ---
+      # Langflow blocks private/link-local IPs by default, so the stock Ollama component
+      # fails with "host.docker.internal resolves to blocked IP <private address>".
+      # Allowlist specific hosts rather than setting LANGFLOW_SSRF_PROTECTION_ENABLED
+      # =false: the guard is what stops a flow reaching the rest of your LAN, and a flow
+      # is an untrusted surface. Add your own model host here (hostname or IP) if it is
+      # not reachable through host.docker.internal — see EXTRCT_OLLAMA_URL below.
+      # This guard covers STOCK components only; the extrct clients call httpx directly.
+      LANGFLOW_SSRF_ALLOWED_HOSTS: ${LANGFLOW_SSRF_ALLOWED_HOSTS:-host.docker.internal}
+
+      # --- extraction stack (extrct) ---
+      # The engine is mounted (not installed) so edits are picked up on restart without
+      # a rebuild. Once you consume a published release instead, this becomes a
+      # `pip install extrct==X.Y.Z` in a derived image.
+      PYTHONPATH: /extrct
+      # Default Ollama endpoint for the extrct clients. host.docker.internal reaches a
+      # server running on the machine hosting Docker; point it anywhere else (another
+      # box on your LAN, a remote GPU host) by setting EXTRCT_OLLAMA_URL in deploy/.env
+      # and adding that host to LANGFLOW_SSRF_ALLOWED_HOSTS above.
+      EXTRCT_OLLAMA_URL: ${EXTRCT_OLLAMA_URL:-http://host.docker.internal:11434}
+      EXTRCT_PG_DSN: postgresql://${EXTRCT_DB_USER:-extrct}:${EXTRCT_DB_PASSWORD:-extrct}@extrct-postgres:5432/${EXTRCT_DB_NAME:-extrct}
+      # LEAVES YOUR MACHINE. Synthetic / de-identified content only.
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      # Flow-to-flow calls (Flow - Call / Flow - Trigger, call-def/1.0): the server's own
+      # v2 API reached from inside the container. The key is minted in Langflow Settings
+      # -> API Keys and lives ONLY in deploy/.env — never in a flow, never in this file.
+      # Same boot rule as everything else: after editing .env, `up -d`, not `restart`.
+      EXTRCT_LANGFLOW_URL: http://localhost:7860
+      EXTRCT_LANGFLOW_API_KEY: ${EXTRCT_LANGFLOW_API_KEY:-}
+
+      # --- tracing into the existing Langfuse ---
+      # Keys come from deploy/.env after creating a project in the Langfuse UI.
+      # LANGFUSE_HOST is deprecated; LANGFUSE_BASE_URL supersedes it and wins when both
+      # are set. Both are kept here so a Langflow downgrade does not silently lose tracing.
+      # These must be present at container start - Langflow reads them at boot, so editing
+      # .env requires `docker compose --profile prototype up -d`, not `restart`.
+      LANGFUSE_BASE_URL: http://langfuse-web:3000
+      LANGFUSE_HOST: http://langfuse-web:3000
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+    # Serving models from a dedicated host on your LAN? Give it a name here so flows and
+    # components can use it instead of remembering an IP, and add the same host to
+    # LANGFLOW_SSRF_ALLOWED_HOSTS above. Example:
+    #   extra_hosts:
+    #     - "gpu-host:10.0.0.2"
+    volumes:
+      - langflow-data:/app/langflow
+      # Relative to THIS file's directory — the reason to use `include:` over stacked -f.
+      - ../../../integrations/langflow/components:/components:ro
+      # The FROZEN legacy engine the canvas runs. The canonical, published library lives
+      # at packages/extrct and has a different module layout; migrating the components
+      # onto it is the next milestone — until then the canvas is pinned to this legacy
+      # copy, unchanged, so nothing untested is claimed to work.
+      - ../../../integrations/langflow/legacy_extrct:/extrct:ro
+
+  langflow-db:
+    image: docker.io/postgres:17
+    profiles: [prototype]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: ${LANGFLOW_DB_PASSWORD:-langflow}
+      POSTGRES_DB: langflow
+      TZ: UTC
+      PGTZ: UTC
+    # No host port. Nothing outside the compose project needs to reach this.
+    volumes:
+      - langflow-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langflow"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  langflow-data:
+    name: extrct_langflow-data
+  langflow-db-data:
+    name: extrct_langflow-db-data

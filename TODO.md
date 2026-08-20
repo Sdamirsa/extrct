@@ -1,0 +1,36 @@
+# TODO
+
+What is open right now. Longer-lived design rationale lives in
+[`docs/extraction-stack/`](docs/extraction-stack/); what happened when lives in
+[`docs/log/`](docs/log/).
+
+## Next up
+
+- [ ] **Publish `extrct` 0.1.0 to PyPI.** The build is clean and the release workflow
+      is wired for Trusted Publishing (`.github/workflows/release.yml`); it needs the
+      PyPI project + pending publisher configured, then a `v0.1.0` tag. Afterwards,
+      drop the `git+https` install fallback from both READMEs.
+- [ ] **Migrate the Langflow components onto the published library.** They currently
+      import the legacy API (`flow_model`, `call_model`, module-level `storage`), which
+      the published package reorganised into a provider registry, `xai.*`, and
+      class-based storage. Port or shim, re-verify every bundle in-container, then
+      retire `integrations/langflow/legacy_extrct/`.
+- [ ] **vLLM provider** — input/prompt logprobs and post-mask logprob semantics. The
+      registry, the `prompt_logprobs` capability flag, and the sentinel handling in
+      `xai.certainty` already anticipate it; see `packages/extrct/docs/providers.md`.
+- [ ] **`apps/`** — the workbench: a def-editor first, then a run-monitor over the run
+      log, then a canvas that *renders* def documents (never a freeform graph editor).
+- [ ] **Repo-wide licensing.** `packages/extrct/` is Apache-2.0 and the root LICENSE
+      matches; confirm the intended license for the docs and deploy configs.
+
+## Backlog
+
+- Cerebras and Fireworks providers, after vLLM proves the registry's second and third
+  backends.
+- Post-hoc grounding inside the pipeline. `grounding.mode=posthoc` is currently
+  recorded as a skipped step with that reason; the standalone lane already works via
+  `xai.grounding` + `schema.evidence_schema`.
+- A model-gateway component for `deploy/`: one OpenAI-compatible router in front of
+  local and hosted backends, doubling as the egress filter.
+- Postgres integration tests in CI (needs a service container; the SQLite backend
+  covers the shared semantics today).

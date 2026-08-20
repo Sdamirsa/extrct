@@ -1,0 +1,40 @@
+# Offline demo job — identical in shape to a real one; the demo script swaps the
+# HTTP transport for a mock, so this runs with no model, no key, no network.
+provider:
+  provider: ollama
+  model: demo-model
+  base_url: http://mock          # never contacted — the example injects a MockTransport
+  num_ctx: 8192
+
+schema:
+  root_name: echo_report
+  encoding: strict_nullable      # the declared experimental axis; pin it per run
+  variables:
+    - name: lvef
+      type: float
+      description: Left-ventricular ejection fraction, percent
+      constraints: {ge: 0, le: 100}
+    - name: mitral_regurgitation
+      type: str
+      description: Worst mitral regurgitation grade mentioned
+      options: ["none", "mild", "moderate", "severe"]
+      required: false
+    - name: followup_months
+      type: int
+      description: Planned follow-up interval in months
+      required: false
+
+extract:
+  ladder: ["json_repair", "coerce"]
+  run_tags: offline-demo
+
+grounding:
+  enabled: true                  # ask for verbatim quotes, align each against the source
+
+certainty:
+  enabled: true                  # per-field confidence from token logprobs
+  top_logprobs: 3
+
+storage:
+  backend: sqlite
+  path: offline_demo_runs.sqlite

@@ -1,0 +1,46 @@
+# Cloud extraction through OpenRouter.
+#
+# Two things are REQUIRED by design, not convention:
+#
+# 1. data_classification — you must declare what the text is before it may leave the
+#    machine. There is deliberately no value meaning "confidential but allow it".
+# 2. endpoint_tag — pin ONE serving endpoint. Default routing re-ranks every ~5
+#    minutes; a pin plus require_parameters (on by default) turns silent downgrades
+#    into loud 404s. Discover tags with examples/02_openrouter.py, and fetch them for
+#    the EXACT model id you send (':free' variants have their own endpoint lists).
+#
+# The API key comes from the OPENROUTER_API_KEY environment variable (see
+# .env.example) — keys never belong in this file.
+provider:
+  provider: openrouter
+  model: google/gemma-3-27b-it
+  endpoint_tag: ""               # REQUIRED: paste a tag from the discovery script
+  data_classification: synthetic # synthetic | deidentified_aggregate | public | approved_for_egress
+  egress_route: direct           # or gateway + gateway_url (or set EXTRCT_GATEWAY_URL)
+  allow_direct_egress: true
+  max_output_tokens: 2048
+  zdr: true                      # zero-data-retention routing
+  attribution_title: extrct-example
+
+schema:
+  root_name: echo_report
+  variables:
+    - name: lvef
+      type: float
+      description: Left-ventricular ejection fraction, percent
+      constraints: {ge: 0, le: 100}
+    - name: mitral_regurgitation
+      type: str
+      options: ["none", "mild", "moderate", "severe"]
+      required: false
+
+extract:
+  ladder: ["json_repair", "coerce"]
+  run_tags: openrouter-example
+
+grounding: {enabled: true}
+certainty: {enabled: true}       # only endpoints declaring `logprobs` will route
+
+storage:
+  backend: sqlite
+  path: runs.sqlite
