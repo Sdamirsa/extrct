@@ -35,7 +35,10 @@ def test_enum_posterior_over_option_set():
     assert post["available"] is True
     assert set(post["posterior"]) == {"mild", "moderate", "severe"}
     assert post["posterior"]["mild"] > post["posterior"]["moderate"] > post["posterior"]["severe"]
-    assert abs(sum(post["posterior"].values()) - 1.0) < 1e-6
+    # each member is rounded to 6 dp independently (xai/certainty.py), so the sum
+    # may miss 1.0 by up to 5e-7 per option; 1e-6 sat exactly on that 3-option
+    # boundary and flipped with the interpreter build (failed on CPython 3.10)
+    assert abs(sum(post["posterior"].values()) - 1.0) < 5e-6
 
 
 def test_enum_posterior_refused_without_alternatives():

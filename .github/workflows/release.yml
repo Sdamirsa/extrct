@@ -38,9 +38,12 @@ jobs:
 
       - name: Tests must pass before anything is built
         working-directory: packages/extrct
+        # venv + `uv run`, not `--system`: setup-uv's interpreter is externally
+        # managed (same fix as ci.yml).
         run: |
-          uv pip install --system -e ".[dev]"
-          python -m pytest tests/ -q
+          uv venv
+          uv pip install -e ".[dev]"
+          uv run --no-sync python -m pytest tests/ -q
 
       - name: Build sdist + wheel
         working-directory: packages/extrct
@@ -48,9 +51,7 @@ jobs:
 
       - name: Check package metadata renders on PyPI
         working-directory: packages/extrct
-        run: |
-          uv pip install --system twine
-          twine check dist/*
+        run: uvx twine check dist/*
 
       - uses: actions/upload-artifact@v4
         with:
