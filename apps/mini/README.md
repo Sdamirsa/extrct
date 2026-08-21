@@ -30,8 +30,12 @@ this file is the short form.
    `data_model.json` (the machine-readable input/output declaration) — **these two
    must not drift**; the README is the prose half, the JSON the typed half, and
    `tests/test_handshake.py` checks both stay well-formed.
-3. In `pyproject.toml`: set `name`, then `uv lock` and commit the lock.
-4. Wire deployment as one compose component folder: `deploy/components/<verb>/`,
+3. Keep the app's own knowledge in its `docs/`: dated research notes in
+   `docs/research/`, decisions (append-only, with evidence links) in
+   `docs/decisions.md` — per the unit standard (`.claude/habits.md`; the
+   `unit-keeper` agent scaffolds and audits it).
+4. In `pyproject.toml`: set `name`, then `uv lock` and commit the lock.
+5. Wire deployment as one compose component folder: `deploy/components/<verb>/`,
    behind a profile, port on `127.0.0.1` (snippet in the template README).
 
 ## Apps

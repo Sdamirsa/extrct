@@ -47,6 +47,11 @@ next). Optimise for **re-derivable, auditable artifacts**, not for shipping spee
 - **Compose**: one component folder per service, composed with `include:` (not stacked
   `-f`, which resolves relative paths against the *first* file). **Every published
   port binds to `127.0.0.1`.**
+- **Standalone units** (the library, each mini app, future workbench apps) follow the
+  unit standard in [`.claude/habits.md`](.claude/habits.md): the eight README
+  sections, `docs/` with dated research + append-only `decisions.md`, `tests/`;
+  `pyproject.toml` only for mini apps and the library. The `unit-keeper` agent
+  scaffolds and audits this.
 - Every library change lands with its test; the suite stays offline-runnable.
 
 ## Verification habits that have already caught real bugs

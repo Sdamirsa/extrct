@@ -4,7 +4,7 @@ Keep this file wiring-only — page layout plus calls into `ui/`, where real cod
 grows. Every document is built and validated by `extrct`, and the app's I/O must
 match data_model.json (which this stub reads, so drift shows up on first page load).
 
-Two measured NiceGUI facts (3.16.0, 2026-08-21) this file encodes:
+Measured NiceGUI facts (3.16.0, 2026-08-21) this file encodes:
 - `ui.run(host=...)` defaults to 0.0.0.0 in non-native mode — the explicit
   APP_HOST default below IS the repo's localhost-only rule; do not remove it.
   The Dockerfile sets APP_HOST=0.0.0.0 for container-internal listening while
@@ -12,20 +12,22 @@ Two measured NiceGUI facts (3.16.0, 2026-08-21) this file encodes:
 - UI is built inside @ui.page('/'): the shared auto-index page was removed in
   NiceGUI 3.0 (module-level widgets shared state across sessions), and packaging
   (`nicegui-pack`) requires a page function anyway.
-
-For a desktop window instead of a browser tab, install "nicegui[native]" and pass
-native=True to ui.run().
+- Frozen mode (PyInstaller sets sys.frozen): switch to a native window and a free
+  auto-picked port — what `nicegui-pack --windowed` requires. `APP_NATIVE=1`
+  previews the native window in dev (needs "nicegui[native]" installed).
 """
 
 import json
 import os
+import sys
 from pathlib import Path
 
-from nicegui import ui
+from nicegui import native, ui
 
 HANDSHAKE = json.loads(
     (Path(__file__).parent / "data_model.json").read_text(encoding="utf-8")
 )
+FROZEN = bool(getattr(sys, "frozen", False))
 
 
 @ui.page("/")
@@ -45,7 +47,8 @@ def index() -> None:
 if __name__ in {"__main__", "__mp_main__"}:
     ui.run(
         host=os.environ.get("APP_HOST", "127.0.0.1"),
-        port=int(os.environ.get("APP_PORT", "8080")),
+        port=native.find_open_port() if FROZEN else int(os.environ.get("APP_PORT", "8080")),
         title=HANDSHAKE["app"],
         reload=False,
+        native=FROZEN or os.environ.get("APP_NATIVE") == "1",
     )

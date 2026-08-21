@@ -4,3 +4,7 @@ __pycache__/
 .pytest_cache/
 # NiceGUI's on-disk app.storage state — per-machine runtime data, never a record.
 .nicegui/
+# Desktop-build artifacts (packaging/pack.py) — built per-OS, never committed.
+dist/
+build/
+*.spec

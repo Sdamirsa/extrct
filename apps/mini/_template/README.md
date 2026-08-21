@@ -14,12 +14,14 @@ and containerise, and nothing else:
 |---|---|
 | `README.md` | this handshake — the prose half |
 | `data_model.json` | the machine-readable half (`app-io/1.0`) |
-| `app.py` | entry point (`python app.py`) — wiring only; host/port from env, `127.0.0.1` default |
+| `app.py` | entry point (`python app.py`) — wiring only; host/port from env, `127.0.0.1` default; switches to a native window when frozen |
 | `ui/` | the app's own modules, all UI-shaped; the single place that talks to `extrct` |
+| `docs/` | this app's own knowledge: `research/` (dated notes) + `decisions.md` (append-only) — the unit standard, `.claude/habits.md` |
 | `tests/` | offline tests; `test_handshake.py` keeps this README and `data_model.json` well-formed |
+| `packaging/` | desktop-build pipeline (`nicegui-pack`/PyInstaller) — one build per OS, see its README |
 | `pyproject.toml` + `uv.lock` | standalone uv project; lock committed once the app is real |
 | `Dockerfile` | container build for the compose component (buildable once `extrct` is on PyPI — see its header) |
-| `.gitignore` | `.venv`, caches, and NiceGUI's `.nicegui/` runtime storage |
+| `.gitignore` | `.venv`, caches, NiceGUI's `.nicegui/` runtime storage, and `dist/`/`build/` artifacts |
 
 Deliberately absent: `data/`, `output/`, `results/`. An app's output is an artifact
 of record in library storage, never files in the app folder. Extra `@ui.page`
@@ -96,10 +98,10 @@ uv run python app.py            # http://127.0.0.1:8080
 uv run pytest                   # offline tests, including the handshake checks
 ```
 
-Desktop window instead of a browser tab: add `nicegui[native]` to the dependencies
-and pass `native=True` to `ui.run()` in `app.py`. (Packaging a distributable
-executable — NiceGUI's PyInstaller path — is a release-engineering step, taken only
-for apps that leave your machine.)
+Desktop window instead of a browser tab: `uv sync --group pack`, then
+`APP_NATIVE=1 uv run python app.py` for a live preview, or
+`uv run python packaging/pack.py` to build the standalone executable for the OS
+you are on (see [`packaging/README.md`](packaging/README.md)).
 
 Deployment — one compose component folder, the existing `deploy/` pattern:
 
