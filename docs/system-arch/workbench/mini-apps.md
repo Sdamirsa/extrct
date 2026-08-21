@@ -199,11 +199,18 @@ per platform, only when someone needs the artifact.
 One framework for the whole lane, deliberately: a second one doubles the maintenance
 surface for zero new capability.
 
-## Open questions (for review before the first app lands)
+## Open questions — resolved 2026-08-21 in the app handshakes
 
-1. Storage: does `annotation-def/1.0` get its own table in the run-log schema, or a
-   new document store? (Leaning: a table next to the run rows, same backends.)
-2. Annotator identity: what id scheme is pseudonymous enough for the governance-first
-   fields while still supporting inter-annotator agreement?
-3. Does the `annotation-def` module land in `packages/extrct` with the first app
-   (leaning yes — the library owns contracts) or wait for a second consumer?
+Resolved when the `annotate` and `evaluate` handshakes were written (authority:
+`apps/mini/annotate/` and `apps/mini/evaluate/` — README + data_model.json +
+docs/decisions.md):
+
+1. **Storage** — annotation and evaluation tables land next to the run rows, same
+   backends (SQLite default, Postgres when configured), idempotent on uid.
+2. **Annotator identity** — a required pseudonymous handle string (`annotator` /
+   `evaluator`), never PII; stable enough for agreement counting, no account
+   system.
+3. **Contract modules** — `annotation-def`, `evaluation-def`, and `rubric-def`
+   land in `packages/extrct` with the first app build, alongside the dataset
+   loader + column-role inference and the schema→form-plan module the apps share
+   through the library (never through each other).

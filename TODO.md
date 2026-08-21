@@ -25,9 +25,17 @@ What is open right now. Longer-lived design rationale lives in
       `xai.certainty` already anticipate it; see `packages/extrct/docs/providers.md`.
 - [ ] **`apps/`** — the workbench: a def-editor first, then a run-monitor over the run
       log, then a canvas that *renders* def documents (never a freeform graph editor).
-      Mini apps (NiceGUI, starting with `annotate`, the human extraction form) are
-      the proving lane — design: [docs/system-arch/workbench/mini-apps.md](docs/system-arch/workbench/mini-apps.md);
+      Mini apps (NiceGUI) are the proving lane — design:
+      [docs/system-arch/workbench/mini-apps.md](docs/system-arch/workbench/mini-apps.md);
       scaffold: [apps/mini/_template/](apps/mini/_template/).
+- [ ] **Build `annotate` + `evaluate`** — handshakes are complete and outsourceable
+      ([apps/mini/annotate/](apps/mini/annotate/), [apps/mini/evaluate/](apps/mini/evaluate/)).
+      Library prerequisites first (in `packages/extrct`, each with offline tests):
+      `annotation-def/1.0` + `evaluation-def/1.0` + `rubric-def/1.0` contracts and
+      their storage tables; dataset loader (csv/tsv/xlsx/json/jsonl) with
+      column-role inference (text/id/llm_output, infer-then-confirm); the
+      schema→form-plan module (field descriptors the apps render). Then the two
+      UIs per their READMEs; first desktop build on macOS.
 - [ ] **Repo-wide licensing.** `packages/extrct/` is Apache-2.0 and the root LICENSE
       matches; confirm the intended license for the docs and deploy configs.
 

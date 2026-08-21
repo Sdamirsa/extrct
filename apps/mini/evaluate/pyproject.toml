@@ -1,0 +1,32 @@
+# Template. After copying: set `name` (extrct-app-<verb>), adjust deps, then
+# `uv lock` and COMMIT the lock — apps are deployables, so they pin (the library
+# does not commit a lock; that asymmetry is deliberate).
+#
+# No [build-system], deliberately: this is a run-in-place app, not a package.
+# `uv sync` installs dependencies only; `python app.py` puts the app folder on
+# sys.path, so the local `ui/` package imports without an install step.
+#
+# Desktop build: add "nicegui[native]" (pywebview) instead of plain nicegui and
+# run with native=True — see README.md.
+[project]
+name = "extrct-app-evaluate"
+version = "0.1.0"
+description = "Rubric-based human evaluation of LLM extractions"
+requires-python = ">=3.10"
+dependencies = [
+    "extrct>=0.1.0",
+    "nicegui>=3.16",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+# Desktop builds (packaging/pack.py): install with `uv sync --group pack`,
+# build ON the target OS — PyInstaller does not cross-compile.
+pack = ["nicegui[native]>=3.16", "pyinstaller>=6"]
+
+# Local dev against the monorepo library. Drop this table once extrct is on PyPI
+# and this app should track releases instead of the working tree. NOT a uv
+# workspace, deliberately: the library's dependency tree must stay resolvable
+# without the UI framework's.
+[tool.uv.sources]
+extrct = { path = "../../../packages/extrct", editable = true }

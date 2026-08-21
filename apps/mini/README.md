@@ -40,6 +40,7 @@ this file is the short form.
 
 ## Apps
 
-| App | Task | Output contract |
-|---|---|---|
-| *(none yet)* | first up: `annotate` — the human extraction form | `annotation-def/1.0` |
+| App | Task | Output contract | Status |
+|---|---|---|---|
+| [`annotate/`](annotate/) | human extraction (blind) and correction of LLM output (review) | `annotation-def/1.0` | handshake complete — ready to build/outsource |
+| [`evaluate/`](evaluate/) | rubric-based human judgment of LLM extractions | `evaluation-def/1.0` (rubric: `rubric-def/1.0`) | handshake complete — ready to build/outsource |
