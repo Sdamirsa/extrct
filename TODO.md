@@ -25,6 +25,8 @@ What is open right now. Longer-lived design rationale lives in
       `xai.certainty` already anticipate it; see `packages/extrct/docs/providers.md`.
 - [ ] **`apps/`** — the workbench: a def-editor first, then a run-monitor over the run
       log, then a canvas that *renders* def documents (never a freeform graph editor).
+      Mini apps (Streamlit, starting with the human extraction form) are the proving
+      lane — design: [docs/system-arch/workbench/mini-apps.md](docs/system-arch/workbench/mini-apps.md).
 - [ ] **Repo-wide licensing.** `packages/extrct/` is Apache-2.0 and the root LICENSE
       matches; confirm the intended license for the docs and deploy configs.
 
