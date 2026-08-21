@@ -19,10 +19,13 @@ this file is the short form.
 
 ## Starting a new app
 
-1. Copy [`_template/`](_template/) to `apps/<verb>/`.
+1. Copy [`_template/`](_template/) to `apps/<verb>/` — the folder is standalone by
+   construction (entry point, `ui/` package, tests, Streamlit config, Dockerfile);
+   its README documents the layout.
 2. Fill in `README.md` (the handshake: scope, boundaries, definition of done) and
    `data_model.json` (the machine-readable input/output declaration) — **these two
-   must not drift**; the README is the prose half, the JSON the typed half.
+   must not drift**; the README is the prose half, the JSON the typed half, and
+   `tests/test_handshake.py` checks both stay well-formed.
 3. In `pyproject.toml`: set `name`, then `uv lock` and commit the lock.
 4. Wire deployment as one compose component folder: `deploy/components/<verb>/`,
    behind a profile, port on `127.0.0.1` (snippet in the template README).

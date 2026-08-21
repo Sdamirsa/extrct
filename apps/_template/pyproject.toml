@@ -1,6 +1,10 @@
 # Template. After copying: set `name` (extrct-app-<verb>), adjust deps, then
 # `uv lock` and COMMIT the lock — apps are deployables, so they pin (the library
 # does not commit a lock; that asymmetry is deliberate).
+#
+# No [build-system], deliberately: this is a run-in-place app, not a package.
+# `uv sync` installs dependencies only; `streamlit run app.py` puts the app folder
+# on sys.path, so the local `ui/` package imports without an install step.
 [project]
 name = "extrct-app-CHANGEME"
 version = "0.1.0"
@@ -10,6 +14,9 @@ dependencies = [
     "extrct>=0.1.0",
     "streamlit>=1.40",
 ]
+
+[dependency-groups]
+dev = ["pytest>=8"]
 
 # Local dev against the monorepo library. Drop this table once extrct is on PyPI
 # and this app should track releases instead of the working tree. NOT a uv

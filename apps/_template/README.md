@@ -5,6 +5,28 @@ agreed before code. [`data_model.json`](data_model.json) is its machine-readable
 half — inputs and outputs as typed contracts. The two must not drift: change them in
 the same commit or not at all.*
 
+## Layout
+
+Standalone by construction — the folder carries everything it needs to run, test,
+and containerise, and nothing else:
+
+| Path | Purpose |
+|---|---|
+| `README.md` | this handshake — the prose half |
+| `data_model.json` | the machine-readable half (`app-io/1.0`) |
+| `app.py` | entry point (`streamlit run app.py`) — wiring only |
+| `ui/` | the app's own modules, all UI-shaped; the single place that talks to `extrct` |
+| `tests/` | offline tests; `test_handshake.py` keeps this README and `data_model.json` well-formed |
+| `.streamlit/config.toml` | binds `127.0.0.1`, telemetry off — do not weaken |
+| `pyproject.toml` + `uv.lock` | standalone uv project; lock committed once the app is real |
+| `Dockerfile` | container build for the compose component (buildable once `extrct` is on PyPI — see its header) |
+| `.gitignore` | `.venv`, caches, and `.streamlit/secrets.toml` — credentials never enter the repo |
+
+Deliberately absent: `data/`, `output/`, `results/`. An app's output is an artifact
+of record in library storage, never files in the app folder. A `pages/` folder
+(Streamlit multipage) is allowed but suspect — one task, one screen; wanting pages
+is usually wanting a second app.
+
 ## Scope
 
 One paragraph: the single task this app performs, for whom, and the moment it starts
@@ -71,6 +93,7 @@ referenced by hash, stored only per the library's opt-in policy.
 ```bash
 uv sync
 uv run streamlit run app.py     # http://127.0.0.1:8501
+uv run pytest                   # offline tests, including the handshake checks
 ```
 
 Deployment — one compose component folder, the existing `deploy/` pattern:

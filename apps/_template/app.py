@@ -1,8 +1,8 @@
 """Entry point template. The app renders; the library decides.
 
-Keep this file UI-only: every document is built and validated by `extrct`, and the
-app's I/O must match data_model.json (which this stub reads, so drift shows up on
-the first page load).
+Keep this file wiring-only — page config plus calls into `ui/`, where real code
+grows. Every document is built and validated by `extrct`, and the app's I/O must
+match data_model.json (which this stub reads, so drift shows up on first page load).
 """
 
 import json
