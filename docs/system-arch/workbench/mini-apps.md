@@ -42,6 +42,12 @@ Two rules, in the spirit of the root red lines:
 Hub-and-spoke, never mesh: apps share state only through the registry and the run
 log. An app that talks to another app, or to Langflow, has stopped being mini.
 
+The lane's scaffold lives at [`apps/_template/`](../../../apps/_template/): the
+handshake `README.md` (scope, boundaries, definition of done), the machine-readable
+`data_model.json` (`app-io/1.0` — inputs/outputs as typed contracts), and a per-app
+uv project. Each app is a standalone uv project with a committed `uv.lock` — apps
+are deployables, so they pin; deliberately not a workspace with the library.
+
 ## The handshake — input and output contracts
 
 The interface between a mini app and the rest of the system is two JSON documents,

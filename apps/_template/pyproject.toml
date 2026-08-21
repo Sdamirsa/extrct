@@ -1,0 +1,19 @@
+# Template. After copying: set `name` (extrct-app-<verb>), adjust deps, then
+# `uv lock` and COMMIT the lock — apps are deployables, so they pin (the library
+# does not commit a lock; that asymmetry is deliberate).
+[project]
+name = "extrct-app-CHANGEME"
+version = "0.1.0"
+description = "CHANGEME — one-line task statement, identical to the README title"
+requires-python = ">=3.10"
+dependencies = [
+    "extrct>=0.1.0",
+    "streamlit>=1.40",
+]
+
+# Local dev against the monorepo library. Drop this table once extrct is on PyPI
+# and this app should track releases instead of the working tree. NOT a uv
+# workspace, deliberately: the library's dependency tree must stay resolvable
+# without Streamlit's.
+[tool.uv.sources]
+extrct = { path = "../../packages/extrct", editable = true }
