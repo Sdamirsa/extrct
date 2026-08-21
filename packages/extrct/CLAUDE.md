@@ -71,3 +71,6 @@ Optimise for **re-derivable, auditable behaviour**, not for shipping speed.
 v0.1.0. Providers: ollama, openrouter. Stores: postgres, sqlite, null. Roadmap
 providers (vLLM → Cerebras → Fireworks) documented in docs/providers.md; the
 `prompt_logprobs` capability flag and vLLM sentinel/mask-state handling already exist.
+Model registry (`extrct.models`, `model-registry/1.0`): gemma-4-31b-it baseline —
+ollama/gemma4:31b-it-q4_K_M measured 5/5 by `examples/08_model_probe.py --long`
+(2026-08-21); the openrouter row stays `untested` pending OPENROUTER_API_KEY.

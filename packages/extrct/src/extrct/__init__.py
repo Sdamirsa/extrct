@@ -21,6 +21,7 @@ from . import (
     hashing,
     job,
     merging,
+    models,
     pipeline,
     providers,
     repair,
@@ -41,6 +42,13 @@ from .client_model import (
 from .extractor import ExtractionResult, Extractor
 from .hashing import canonical_json, content_uid, key_fingerprint, sha256_text
 from .job import JOB_MODEL_VERSION, load_job, parse_job
+from .models import (
+    MODEL_REGISTRY_VERSION,
+    feature_status,
+    model_registry,
+    models_for,
+    register_model,
+)
 from .providers import (
     OllamaSpec,
     OpenRouterSpec,

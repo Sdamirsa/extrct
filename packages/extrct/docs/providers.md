@@ -139,3 +139,12 @@ machinery's vote grouping.
 Backward compatibility: adding a provider or a capability flag never changes existing
 uids or record shapes; record shapes only grow (`record_version` bumps on meaning
 changes).
+
+## Which models, though?
+
+Provider behaviour and model behaviour are different axes. This document records the
+*provider* measurements; which **models** are measured to support which extrct
+features lives in the model registry (`extrct.models`, contract `model-registry/1.0`).
+`examples/08_model_probe.py` runs the feature battery against a live endpoint and
+prints a paste-ready entry — same rule as here: a claim carries the date and engine
+version that justify it.

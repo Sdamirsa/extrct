@@ -11,6 +11,10 @@ What is open right now. Longer-lived design rationale lives in
       restricted to `v*` tags, no stored secrets). Remaining: green CI on main, a
       release dry run (Actions → release → Run workflow), then the `v0.1.0` tag.
       Afterwards, drop the `git+https` install fallback from both READMEs.
+- [ ] **Model registry: finish the baseline.** `extrct.models` (`model-registry/1.0`):
+      ollama/gemma4:31b-it-q4_K_M measured 5/5 (2026-08-21, `examples/08_model_probe.py
+      --long`). Remaining: the openrouter row (needs `OPENROUTER_API_KEY`), other
+      quants if wanted, and vLLM/Cerebras/Fireworks rows as their providers land.
 - [ ] **Migrate the Langflow components onto the published library.** They currently
       import the legacy API (`flow_model`, `call_model`, module-level `storage`), which
       the published package reorganised into a provider registry, `xai.*`, and

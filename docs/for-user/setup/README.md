@@ -8,6 +8,7 @@ one authority per fact and nothing here can silently drift.
 |---|---|---|
 | [01 — the library](01-library.md) | `extrct` installed, the offline demo running, the 209-test suite passing | Python ≥ 3.10, nothing else |
 | [02 — the Langflow stack](02-langflow-stack.md) | the docker compose stack (Postgres, Langfuse, Label Studio, Langflow canvas) | Docker Desktop, Compose v2.20+ |
+| [03 — add a GPU host](03-add-gpu-host.md) | a second machine's GPU serving Ollama to your laptop over a LAN cable or an overlay network | a GPU machine, one cable (or Tailscale) |
 
 Quick health check of any checkout, at any time:
 

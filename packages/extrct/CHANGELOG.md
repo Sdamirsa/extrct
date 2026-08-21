@@ -4,6 +4,20 @@ All notable changes to extrct. Format: [Keep a Changelog](https://keepachangelog
 versioning: [SemVer](https://semver.org). Contract documents (`*-def/X.Y`) version
 independently of the package.
 
+## [Unreleased]
+
+### Added
+
+- **Model registry** (`extrct.models`, contract `model-registry/1.0`): records which
+  (provider, model) pairs are *measured* against which features (structured_output
+  incl. hierarchical schemas, certainty, enum_posterior, grounding, long_text) —
+  pass/partial/fail require a probe run and carry date + engine; `untested` is the
+  honest default. `register_model()` extends at runtime, mirroring
+  `register_provider()`. Baseline entries: the gemma-4-31b-it family under ollama
+  and openrouter.
+- **Live probe battery** (`examples/08_model_probe.py`): runs the feature battery
+  against a real endpoint on synthetic text and prints a paste-ready registry entry.
+
 ## [0.1.0] — 2026-08-20
 
 First public cut. The engine originates from a private research platform where every
