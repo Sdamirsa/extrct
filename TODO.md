@@ -35,7 +35,9 @@ What is open right now. Longer-lived design rationale lives in
       their storage tables; dataset loader (csv/tsv/xlsx/json/jsonl) with
       column-role inference (text/id/llm_output, infer-then-confirm); the
       schema→form-plan module (field descriptors the apps render). Then the two
-      UIs per their READMEs; first desktop build on macOS.
+      UIs per their READMEs; first desktop build on macOS. Later, library-side:
+      inter-rater statistics beyond counts/means (kappa etc.), computed from
+      stored `evaluation-def` documents — feeds the workbench run-monitor.
 - [ ] **Repo-wide licensing.** `packages/extrct/` is Apache-2.0 and the root LICENSE
       matches; confirm the intended license for the docs and deploy configs.
 

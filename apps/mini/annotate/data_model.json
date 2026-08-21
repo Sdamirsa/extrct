@@ -96,7 +96,9 @@
             "description": "Must validate against the exact schema `schema_uid` names — the same validator model output goes through. Optional absent fields are explicit null (strict_nullable), never dropped keys."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "if": { "properties": { "mode": { "const": "review" } } },
+        "then": { "required": ["seed"] }
       }
     },
     {

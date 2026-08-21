@@ -1,4 +1,4 @@
-# Decisions — <app-verb>
+# Decisions — evaluate
 
 Append-only: one dated entry per decision that shaped this unit — corrections are
 new entries linking the date they correct, never edits. Repo-wide decisions live in
@@ -36,3 +36,8 @@ rater, per-field vs per-record units) and belong in the library, computed from
 stored documents — not improvised in an app's export path.
 **Evidence:** lane rule "zero analysis logic in apps beyond projections"; open item
 recorded in TODO via the workbench run-monitor lane.
+
+## 2026-08-21 — uv.lock deferred until the build starts
+**Why:** as ../annotate/ (2026-08-21): no final dependency set at handshake stage;
+the lock is the first act of the build.
+**Evidence:** unit-keeper audit 2026-08-21; template README Layout row.

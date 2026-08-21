@@ -1,4 +1,4 @@
-# Decisions — <app-verb>
+# Decisions — annotate
 
 Append-only: one dated entry per decision that shaped this unit — corrections are
 new entries linking the date they correct, never edits. Repo-wide decisions live in
@@ -39,3 +39,11 @@ reusable by ../evaluate/ without app-to-app coupling). This app's ui/ maps form-
 entries to NiceGUI widgets and nothing else.
 **Evidence:** lane rule "zero extraction or schema logic in an app"; hub-and-spoke
 (no shared app code) — design doc.
+
+## 2026-08-21 — uv.lock deferred until the build starts
+**Why:** the handshake stage has no final dependency set — `extrct` is still a
+path source and the UI build will add pins. Locking now would freeze a tree that
+is known to change; the lock is committed as the first act of the build (the
+template's "lock committed once the app is real").
+**Evidence:** unit-keeper audit 2026-08-21 (offered lock-now or dated deferral);
+template README Layout row.

@@ -1,4 +1,4 @@
-# Research — <app-verb>
+# Research — annotate
 
 Dated notes that informed this app's decisions, one file per topic:
 `YYYY-MM-DD-<topic>.md`. Each note separates **verified** claims (source URL or
