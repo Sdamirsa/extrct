@@ -1,0 +1,180 @@
+{
+  "handshake": "app-io/1.0",
+  "app": "evaluate",
+  "description": "Rubric-based human evaluation of LLM extractions",
+  "notes": [
+    "Machine-readable half of README.md — the two must not drift; change both in one commit.",
+    "Uids are sha256(canonical_json(body))[:16]. Timestamps/durations ride storage rows, never the hash.",
+    "The evaluated values are immutable here; correcting them is ../annotate/ review mode."
+  ],
+  "inputs": [
+    {
+      "name": "variables_set",
+      "kind": "contract",
+      "contract": "schema variables (registry or schema JSON export)",
+      "identified_by": "schema_uid",
+      "description": "As ../annotate/: loaded via the library, never redefined."
+    },
+    {
+      "name": "dataset",
+      "kind": "file",
+      "formats": ["csv", "tsv", "xlsx", "json", "jsonl"],
+      "identified_by": "input_uid (sha256 of the record text) + optional user id column",
+      "description": "As ../annotate/: column roles inferred from structure and types, confirmed before any record is shown."
+    },
+    {
+      "name": "llm_output",
+      "kind": "data",
+      "required": true,
+      "contract": "JSON values per record for the schema `schema_uid` names",
+      "identified_by": "values_sha256, optional run_uid",
+      "description": "What is being judged. A record failing schema validation stays evaluable (rendered read-only raw; target.valid=false)."
+    },
+    {
+      "name": "reference",
+      "kind": "data",
+      "required": false,
+      "contract": "annotation-def/1.0 documents (gold), joined by input_uid or input_text_sha256",
+      "identified_by": "annotation_uid",
+      "description": "Optional gold standard; join misses are listed loudly, never dropped silently."
+    },
+    {
+      "name": "rubric",
+      "kind": "contract",
+      "contract": "rubric-def/1.0",
+      "identified_by": "rubric_uid",
+      "description": "Authored criteria as data, content-hashed. A default fixture ships in tests/fixtures/; users copy and edit it.",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "rubric-def/1.0",
+        "type": "object",
+        "required": ["rubric_model_version", "name", "field_verdicts", "criteria"],
+        "properties": {
+          "rubric_model_version": { "const": "rubric-def/1.0" },
+          "name": { "type": "string", "minLength": 1 },
+          "field_verdicts": {
+            "type": "array",
+            "minItems": 2,
+            "items": { "type": "string" },
+            "description": "Allowed per-field verdict labels, e.g. correct, minor_error, major_error, missing, spurious, not_evaluable."
+          },
+          "criteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["key", "description", "scale"],
+              "properties": {
+                "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                "description": { "type": "string", "minLength": 1 },
+                "scale": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": ["type", "options"],
+                      "properties": {
+                        "type": { "const": "enum" },
+                        "options": { "type": "array", "minItems": 2, "items": { "type": "string" } }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": ["type", "ge", "le"],
+                      "properties": {
+                        "type": { "const": "int" },
+                        "ge": { "type": "integer" },
+                        "le": { "type": "integer" }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "evaluation",
+      "kind": "contract",
+      "contract": "evaluation-def/1.0",
+      "identified_by": "evaluation_uid",
+      "written_to": "library storage (SQLite default, Postgres when configured)",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "evaluation-def/1.0",
+        "type": "object",
+        "required": [
+          "evaluation_model_version",
+          "schema_uid",
+          "input_text_sha256",
+          "evaluator",
+          "target",
+          "rubric_uid",
+          "field_verdicts",
+          "criterion_scores"
+        ],
+        "properties": {
+          "evaluation_model_version": { "const": "evaluation-def/1.0" },
+          "schema_uid": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+          "input_uid": { "type": "string" },
+          "input_text_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "evaluator": { "type": "string", "minLength": 1, "description": "Pseudonymous handle, never PII." },
+          "target": {
+            "type": "object",
+            "required": ["values_sha256", "valid"],
+            "properties": {
+              "values_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "run_uid": { "type": "string" },
+              "valid": { "type": "boolean", "description": "Whether the judged output validated against the schema." }
+            },
+            "additionalProperties": false,
+            "description": "What was judged — immutable in this app."
+          },
+          "reference": {
+            "type": "object",
+            "required": ["annotation_uid"],
+            "properties": { "annotation_uid": { "type": "string", "pattern": "^[0-9a-f]{16}$" } },
+            "additionalProperties": false
+          },
+          "rubric_uid": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+          "field_verdicts": {
+            "type": "object",
+            "description": "Leaf-field path -> {verdict, note?}; list-of-objects fields judged per row (path includes the row index).",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["verdict"],
+              "properties": {
+                "verdict": { "type": "string" },
+                "note": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "criterion_scores": {
+            "type": "object",
+            "description": "Rubric criterion key -> score (string for enum scales, integer for int scales).",
+            "additionalProperties": { "type": ["string", "integer"] }
+          },
+          "skip_reason": { "type": "string" },
+          "overall_note": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "export",
+      "kind": "file",
+      "formats": ["jsonl", "csv", "xlsx"],
+      "contract": "projection of stored evaluation-def/1.0 documents + summary sheet (verdict counts, mean scores, agreement rates when references exist)",
+      "identified_by": "evaluation_uid per row — the projection carries the document ids it projects",
+      "description": "Round-trip requirement as ../annotate/: re-import reproduces identical evaluation_uids, idempotent in storage."
+    }
+  ]
+}

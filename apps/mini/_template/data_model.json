@@ -1,0 +1,69 @@
+{
+  "handshake": "app-io/1.0",
+  "app": "<app-verb>",
+  "description": "<one-line task statement — identical to the README title line>",
+  "notes": [
+    "Machine-readable half of README.md — the two must not drift; change both in one commit.",
+    "Uids are sha256(canonical_json(body))[:16]. Timestamps ride storage rows, never the hash.",
+    "Replace every <placeholder>; delete example entries that do not apply."
+  ],
+  "inputs": [
+    {
+      "name": "variables_set",
+      "kind": "contract",
+      "contract": "schema variables (registry)",
+      "identified_by": "schema_uid",
+      "description": "The variables set the app renders from, loaded from the registry — never redefined or copied into the app."
+    },
+    {
+      "name": "source_text",
+      "kind": "text",
+      "identified_by": "input_text_sha256",
+      "description": "The text shown to the user. Referenced by full sha256 in outputs; stored only per the library's opt-in policy."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "annotation",
+      "kind": "contract",
+      "contract": "annotation-def/1.0",
+      "identified_by": "annotation_uid",
+      "written_to": "library storage (run-log backends)",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "annotation-def/1.0",
+        "type": "object",
+        "required": [
+          "annotation_model_version",
+          "schema_uid",
+          "input_text_sha256",
+          "annotator",
+          "values"
+        ],
+        "properties": {
+          "annotation_model_version": { "const": "annotation-def/1.0" },
+          "schema_uid": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{16}$",
+            "description": "Pins the annotation to the exact schema it was collected against."
+          },
+          "input_text_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Full digest of the source text — hash, don't keep."
+          },
+          "annotator": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Pseudonymous id, never PII."
+          },
+          "values": {
+            "type": "object",
+            "description": "Must validate against the exact schema `schema_uid` names — the same validator model output goes through."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ]
+}

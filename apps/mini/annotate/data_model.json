@@ -1,0 +1,113 @@
+{
+  "handshake": "app-io/1.0",
+  "app": "annotate",
+  "description": "Human extraction and correction against an extrct variables set",
+  "notes": [
+    "Machine-readable half of README.md — the two must not drift; change both in one commit.",
+    "Uids are sha256(canonical_json(body))[:16]. Timestamps and durations ride storage rows, never the hash.",
+    "Two modes, one contract: blind (empty form) and review (form seeded from LLM output; seed recorded)."
+  ],
+  "inputs": [
+    {
+      "name": "variables_set",
+      "kind": "contract",
+      "contract": "schema variables (registry or schema JSON export)",
+      "identified_by": "schema_uid",
+      "description": "The variables set the form is rendered from, loaded via the library — never redefined or copied into the app."
+    },
+    {
+      "name": "dataset",
+      "kind": "file",
+      "formats": ["csv", "tsv", "xlsx", "json", "jsonl", "pasted-text"],
+      "identified_by": "input_uid (sha256 of the record text, always computed) + optional user id column",
+      "description": "Records to annotate. Column roles (text / id / llm_output) are inferred from structure and data types, then confirmed by the user before any record is shown; the confirmed mapping is remembered per dataset shape."
+    },
+    {
+      "name": "llm_output",
+      "kind": "data",
+      "required": false,
+      "contract": "JSON values conforming to the schema `schema_uid` names",
+      "identified_by": "values_sha256, optional run_uid",
+      "description": "Review mode only: pre-fills the form. May arrive as a dataset column or a separate JSON/JSONL file joined by input id. Records failing schema validation are flagged and open blind with the raw JSON shown read-only."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "annotation",
+      "kind": "contract",
+      "contract": "annotation-def/1.0",
+      "identified_by": "annotation_uid",
+      "written_to": "library storage (SQLite default, Postgres when configured)",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "annotation-def/1.0",
+        "type": "object",
+        "required": [
+          "annotation_model_version",
+          "schema_uid",
+          "input_text_sha256",
+          "annotator",
+          "mode",
+          "values"
+        ],
+        "properties": {
+          "annotation_model_version": { "const": "annotation-def/1.0" },
+          "schema_uid": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{16}$",
+            "description": "Pins the annotation to the exact schema it was collected against."
+          },
+          "input_uid": {
+            "type": "string",
+            "description": "The user's own record id (from the confirmed id column), when one exists."
+          },
+          "input_text_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Full digest of the source text — always computed; hash, don't keep."
+          },
+          "annotator": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Pseudonymous handle, never PII."
+          },
+          "mode": { "enum": ["blind", "review"] },
+          "seed": {
+            "type": "object",
+            "description": "Review mode only: what pre-filled the form, so human-LLM deltas stay computable.",
+            "required": ["source", "values_sha256"],
+            "properties": {
+              "source": { "const": "llm" },
+              "run_uid": { "type": "string" },
+              "values_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "sha256(canonical_json(seed values)) as loaded, before any human edit."
+              }
+            },
+            "additionalProperties": false
+          },
+          "skip_reason": {
+            "type": "string",
+            "description": "Present instead of meaningful values when the record was skipped; values must then be null/empty per the schema."
+          },
+          "values": {
+            "type": "object",
+            "description": "Must validate against the exact schema `schema_uid` names — the same validator model output goes through. Optional absent fields are explicit null (strict_nullable), never dropped keys."
+          }
+        },
+        "additionalProperties": false,
+        "if": { "properties": { "mode": { "const": "review" } } },
+        "then": { "required": ["seed"] }
+      }
+    },
+    {
+      "name": "export",
+      "kind": "file",
+      "formats": ["jsonl", "csv", "xlsx"],
+      "contract": "projection of stored annotation-def/1.0 documents with all identity columns",
+      "identified_by": "annotation_uid per row — the projection carries the document ids it projects",
+      "description": "Round-trip requirement: re-importing an export reproduces identical annotation_uids, idempotent in storage. Import also accepts bare annotation-def/1.0 JSON/JSONL."
+    }
+  ]
+}
