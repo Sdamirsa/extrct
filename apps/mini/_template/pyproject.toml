@@ -3,8 +3,11 @@
 # does not commit a lock; that asymmetry is deliberate).
 #
 # No [build-system], deliberately: this is a run-in-place app, not a package.
-# `uv sync` installs dependencies only; `streamlit run app.py` puts the app folder
-# on sys.path, so the local `ui/` package imports without an install step.
+# `uv sync` installs dependencies only; `python app.py` puts the app folder on
+# sys.path, so the local `ui/` package imports without an install step.
+#
+# Desktop build: add "nicegui[native]" (pywebview) instead of plain nicegui and
+# run with native=True — see README.md.
 [project]
 name = "extrct-app-CHANGEME"
 version = "0.1.0"
@@ -12,7 +15,7 @@ description = "CHANGEME — one-line task statement, identical to the README tit
 requires-python = ">=3.10"
 dependencies = [
     "extrct>=0.1.0",
-    "streamlit>=1.40",
+    "nicegui>=3.16",
 ]
 
 [dependency-groups]
@@ -21,6 +24,6 @@ dev = ["pytest>=8"]
 # Local dev against the monorepo library. Drop this table once extrct is on PyPI
 # and this app should track releases instead of the working tree. NOT a uv
 # workspace, deliberately: the library's dependency tree must stay resolvable
-# without Streamlit's.
+# without the UI framework's.
 [tool.uv.sources]
-extrct = { path = "../../packages/extrct", editable = true }
+extrct = { path = "../../../packages/extrct", editable = true }

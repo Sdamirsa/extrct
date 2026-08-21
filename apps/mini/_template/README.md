@@ -14,18 +14,17 @@ and containerise, and nothing else:
 |---|---|
 | `README.md` | this handshake — the prose half |
 | `data_model.json` | the machine-readable half (`app-io/1.0`) |
-| `app.py` | entry point (`streamlit run app.py`) — wiring only |
+| `app.py` | entry point (`python app.py`) — wiring only; host/port from env, `127.0.0.1` default |
 | `ui/` | the app's own modules, all UI-shaped; the single place that talks to `extrct` |
 | `tests/` | offline tests; `test_handshake.py` keeps this README and `data_model.json` well-formed |
-| `.streamlit/config.toml` | binds `127.0.0.1`, telemetry off — do not weaken |
 | `pyproject.toml` + `uv.lock` | standalone uv project; lock committed once the app is real |
 | `Dockerfile` | container build for the compose component (buildable once `extrct` is on PyPI — see its header) |
-| `.gitignore` | `.venv`, caches, and `.streamlit/secrets.toml` — credentials never enter the repo |
+| `.gitignore` | `.venv`, caches, and NiceGUI's `.nicegui/` runtime storage |
 
 Deliberately absent: `data/`, `output/`, `results/`. An app's output is an artifact
-of record in library storage, never files in the app folder. A `pages/` folder
-(Streamlit multipage) is allowed but suspect — one task, one screen; wanting pages
-is usually wanting a second app.
+of record in library storage, never files in the app folder. Extra `@ui.page`
+routes are allowed but suspect — one task, one screen; wanting more pages is
+usually wanting a second app.
 
 ## Scope
 
@@ -35,13 +34,14 @@ apps.
 
 ## Boundaries
 
-Inherited from the lane ([design of record](../../docs/system-arch/workbench/mini-apps.md)
+Inherited from the lane ([design of record](../../../docs/system-arch/workbench/mini-apps.md)
 — restated here so this file stands alone):
 
 - Zero extraction or schema logic here — the library builds and validates every
   document; this app renders.
 - Output is an artifact of record: the contract named in `data_model.json`, content
   uid stamped, written through library storage — never this app's own files.
+  NiceGUI's `app.storage` is for UI conveniences only, never for records.
 - Talks only to the registry and the run log. Never to another app, never to Langflow.
 - Localhost-only (`127.0.0.1`), single user, no auth. Needing more is the graduation
   signal, not a feature request.
@@ -76,7 +76,7 @@ The authoritative declaration is [`data_model.json`](data_model.json). Summary:
       the app's I/O without opening `app.py`).
 - [ ] Compose component added under `deploy/components/<app-verb>/`, behind a
       profile, port on `127.0.0.1`, verified with `docker compose config`.
-- [ ] `uv.lock` committed; `uv run streamlit run app.py` works from a clean clone.
+- [ ] `uv.lock` committed; `uv run python app.py` works from a clean clone.
 
 ## App-specific behaviours
 
@@ -92,9 +92,14 @@ referenced by hash, stored only per the library's opt-in policy.
 
 ```bash
 uv sync
-uv run streamlit run app.py     # http://127.0.0.1:8501
+uv run python app.py            # http://127.0.0.1:8080
 uv run pytest                   # offline tests, including the handshake checks
 ```
+
+Desktop window instead of a browser tab: add `nicegui[native]` to the dependencies
+and pass `native=True` to `ui.run()` in `app.py`. (Packaging a distributable
+executable — NiceGUI's PyInstaller path — is a release-engineering step, taken only
+for apps that leave your machine.)
 
 Deployment — one compose component folder, the existing `deploy/` pattern:
 
@@ -102,8 +107,8 @@ Deployment — one compose component folder, the existing `deploy/` pattern:
 # deploy/components/<app-verb>/compose.yaml
 services:
   <app-verb>:
-    build: ../../../apps/<app-verb>
+    build: ../../../apps/mini/<app-verb>
     ports:
-      - "127.0.0.1:8601:8501"   # next free 86xx port
+      - "127.0.0.1:8601:8080"   # next free 86xx port
     profiles: [apps]
 ```

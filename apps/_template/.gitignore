@@ -1,6 +1,0 @@
-.venv/
-__pycache__/
-*.pyc
-.pytest_cache/
-# Streamlit's secrets file — credentials never enter documents, configs, or the repo.
-.streamlit/secrets.toml

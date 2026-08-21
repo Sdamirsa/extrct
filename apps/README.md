@@ -1,37 +1,12 @@
-# apps — the mini-app lane
+# apps — user-facing applications
 
-Small, task-specific Streamlit UIs over the `extrct` library. The design of record is
-[`docs/system-arch/workbench/mini-apps.md`](../docs/system-arch/workbench/mini-apps.md);
-this file is the short form.
+Two lanes, one folder each. The folder boundary matches the rule boundary: each
+lane has its own framework, its own posture, and its own README carrying the rules.
 
-## Rules (the design doc is the authority)
-
-- One app per folder, **named by its task verb** (`annotate`, `review`, …) — the
-  output contract, not the folder, names the document (`annotation-def/1.0`).
-- **Zero extraction or schema logic in an app.** The library builds and validates
-  every document; the app renders.
-- **An app's output is an artifact of record**: versioned contract, content uid,
-  written through library storage — never the app's own files.
-- Hub-and-spoke: apps share state only through the registry and the run log.
-- Each app is its **own uv project** (own `pyproject.toml`, own committed
-  `uv.lock`) — apps are deployables, so they pin; deliberately *not* a workspace
-  with the library, so `extrct`'s dependency tree never entangles with Streamlit's.
-
-## Starting a new app
-
-1. Copy [`_template/`](_template/) to `apps/<verb>/` — the folder is standalone by
-   construction (entry point, `ui/` package, tests, Streamlit config, Dockerfile);
-   its README documents the layout.
-2. Fill in `README.md` (the handshake: scope, boundaries, definition of done) and
-   `data_model.json` (the machine-readable input/output declaration) — **these two
-   must not drift**; the README is the prose half, the JSON the typed half, and
-   `tests/test_handshake.py` checks both stay well-formed.
-3. In `pyproject.toml`: set `name`, then `uv lock` and commit the lock.
-4. Wire deployment as one compose component folder: `deploy/components/<verb>/`,
-   behind a profile, port on `127.0.0.1` (snippet in the template README).
-
-## Apps
-
-| App | Task | Output contract |
+| Lane | Where | What |
 |---|---|---|
-| *(none yet)* | first up: `annotate` — the human extraction form | `annotation-def/1.0` |
+| Mini apps | [`mini/`](mini/) | small, task-specific NiceGUI tools over the `extrct` library (first: `annotate`, the human extraction form). Lane rules and the copy-to-start template live in [`mini/README.md`](mini/README.md). |
+| Workbench | `workbench/` *(planned, not started)* | the main UI: def-editor, run-monitor, and the canvas that *renders* def documents — data-heavy, multi-user, notifications. |
+
+Design of record for the split and the mini-app lane:
+[`docs/system-arch/workbench/mini-apps.md`](../docs/system-arch/workbench/mini-apps.md).
